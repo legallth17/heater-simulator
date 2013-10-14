@@ -1,13 +1,13 @@
 class HeatControler 
-	attr_accessor :target_temperature, :observed_temperature, :threshold
+	attr_accessor :target_temperature, :threshold
+	attr_accessor :probe, :heater
 
 	def initialize
 		@target_temperature = 19
 		@threshold = 0.5
 	end
-	def run?
-		raise "observed temperature not set" unless @observed_temperature
-		@observed_temperature < (@target_temperature + @threshold) 
-		
+	def check_temperature
+		heater.stop  if  heater.started? && @probe.temperature >= (@target_temperature + @threshold)
+		heater.start if !heater.started? && @probe.temperature <  (@target_temperature - @threshold)
 	end
 end

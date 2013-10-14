@@ -4,27 +4,37 @@ describe HeatControler do
 	describe "default values" do
 		its(:target_temperature) { should == 19 }
 		its(:threshold) { should == 0.5 }
-		its(:observed_temperature) { should be_nil }
 	end
-	describe "run?" do
+	describe "check_temperature" do
+		let(:probe)  { double "probe"  }
+		let(:heater) { double "heater" }
 		before :each do
-			subject.target_temperature = 19
-			subject.threshold = 0.5
+			subject.probe  = probe
+			subject.heater = heater
 		end
-		it "returns true when heat is below target+threshold" do
-			subject.observed_temperature = 18.3
-			subject.run?.should be_true
+		it "starts heater when heater is stopped and temperature is lower than min threshold" do
+			probe.stub(:temperature).and_return(18)
+			heater.stub(:started?).and_return(false)
+			heater.should_receive(:start)
+			subject.check_temperature
 		end
-		it "returns false when heat equals to target+threshold" do
-			subject.observed_temperature = 19.5
-			subject.run?.should be_false
+		it "stops heater when heater is started and temperature is greater than max threshold" do
+			probe.stub(:temperature).and_return(20)
+			heater.stub(:started?).and_return(true)
+			heater.should_receive(:stop)
+			subject.check_temperature
 		end
-		it "returns false when heat is greater than target+threshold" do
-			subject.observed_temperature = 20
-			subject.run?.should be_false
+		it "does not start heater when heater is stopped and temperature is greater than min threshold" do
+			probe.stub(:temperature).and_return(19)
+			heater.stub(:started?).and_return(false)
+			heater.should_receive(:start).never
+			subject.check_temperature
 		end
-		it "raises an error when no observed temperature is set" do
-			expect { subject.run? }.to raise_error("observed temperature not set")
+		it "does not stop heater when heater is started and temperature is lower than min threshold" do
+			probe.stub(:temperature).and_return(18)
+			heater.stub(:started?).and_return(true)
+			heater.should_receive(:stop).never
+			subject.check_temperature
 		end
 	end
 
