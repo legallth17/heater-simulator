@@ -1,0 +1,3 @@
+module HeaterSimulator
+  VERSION = "0.0.1"
+end
