@@ -12,26 +12,26 @@ describe HeatControler do
 			subject.probe  = probe
 			subject.heater = heater
 		end
-		it "starts heater when heater is stopped and temperature is lower than min threshold" do
-			probe.stub(:temperature).and_return(18)
+		it "starts heater when heater is stopped and temperature (eg 18.4) is lower than min threshold (eg 18.5)" do
+			probe.stub(:temperature).and_return(18.4)
 			heater.stub(:started?).and_return(false)
 			heater.should_receive(:start)
 			subject.check_temperature
 		end
-		it "stops heater when heater is started and temperature is greater than max threshold" do
-			probe.stub(:temperature).and_return(20)
+		it "stops heater when heater is started and temperature (eg 19.6) is greater than max threshold (eg 19.5)" do
+			probe.stub(:temperature).and_return(19.6)
 			heater.stub(:started?).and_return(true)
 			heater.should_receive(:stop)
 			subject.check_temperature
 		end
-		it "does not start heater when heater is stopped and temperature is greater than min threshold" do
+		it "does not start heater when heater is stopped and temperature (eg 19) is greater than min threshold (eg 18.5)" do
 			probe.stub(:temperature).and_return(19)
 			heater.stub(:started?).and_return(false)
 			heater.should_receive(:start).never
 			subject.check_temperature
 		end
-		it "does not stop heater when heater is started and temperature is lower than min threshold" do
-			probe.stub(:temperature).and_return(18)
+		it "does not stop heater when heater is started and temperature (eg 18.4)  is lower than min threshold (eg 18.5)" do
+			probe.stub(:temperature).and_return(18.4)
 			heater.stub(:started?).and_return(true)
 			heater.should_receive(:stop).never
 			subject.check_temperature
