@@ -6,12 +6,13 @@ describe Heater do
 	subject { heater }
 	describe "init values" do
 		its(:state) { should == :stopped }				
-		its(:power) { should == 0 }				
+		its(:power) { should == 0 }	
+		its(:water_temperature) { should == 60 }	
 	end
 	describe "actual_power" do
 		before(:each) do
-			heater.room	= room
 			room.stub(:temperature).and_return(20)
+			heater.room	= room
 			heater.power = 5
 			heater.water_temperature = 60
 			heater.state = :started
@@ -28,15 +29,14 @@ describe Heater do
 			power_at_60 = heater.actual_power
 			heater.water_temperature = 50
 			power_at_50 = heater.actual_power
-			puts "#{power_at_60} #{power_at_50}"
 			expect(power_at_60 > power_at_50).to be_true
 		end
 		it "depends on room temperature" do
-			heater.state = :started
-			heater.room  = double("room")
+			heater.room = double("room")
 			heater.room.stub(:temperature).and_return(18,20)
 			power_at_18 = heater.actual_power
 			power_at_20 = heater.actual_power
+			puts "#{power_at_18} #{power_at_20}"
 			expect(power_at_18 > power_at_20).to be_true
 		end
 		it "raises an error when room is not set" do

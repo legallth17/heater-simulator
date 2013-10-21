@@ -1,6 +1,6 @@
 class Room
 	attr_accessor :temperature, :outside_temperature, :volume, :surface, :thermal_resistance
-	attr_accessor :heater
+	attr_reader :heater
 
 	def adjust_temperature
 		@temperature -= compute_heat_loss
@@ -13,5 +13,10 @@ class Room
 
 	def compute_heat_gain
 		@heater.actual_power / (1.2*@volume*1004)
+	end
+
+	def add_heater(heater)
+		@heater = heater
+		heater.room = self
 	end
 end

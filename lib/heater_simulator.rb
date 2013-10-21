@@ -21,7 +21,8 @@ end
 		# the heater
 		heater = Heater.new
 		heater.power = 5000 # W
-		room.heater  = heater
+		heater.water_temperature = 60
+		room.add_heater( heater )
 		# the heat controler
 		controler = HeatControler.new
 		controler.probe  = probe
@@ -37,7 +38,7 @@ end
 			t = room.temperature
 			puts "#{n}: #{t} #{delta}"
 			n += 1
-		end while (t < t0)
+		end while (t < t0 && n < 1000)
 	end
 
 simulation1

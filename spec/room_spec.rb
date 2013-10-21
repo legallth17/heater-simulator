@@ -9,7 +9,8 @@ describe Room do
 		room.volume = 3*5*10
 		room.surface = 3*(5+10+5)
 		room.thermal_resistance = 0.5
-		room.heater = heater
+		heater.stub(:room=)
+		room.add_heater(heater)
 	end
 	describe "adjust_temperature" do
 		it "decreases temperature" do
@@ -41,6 +42,16 @@ describe Room do
 			v = room.volume
 			k = p/(1.2*v*1004)
 			expect(room.compute_heat_gain).to eq( k )
+		end
+	end
+	describe "add_heater" do
+		it "sets heater on room" do
+			room.add_heater(heater)
+			expect(room.heater).to eq( heater )
+		end
+		it "sets room on heater" do
+			heater.should_receive(:room=).with(room)
+			room.add_heater(heater)
 		end
 	end
 end
