@@ -28,6 +28,18 @@ describe Heater do
 			power_at_50 = heater.actual_power
 			expect(power_at_60 > power_at_50).to be_true
 		end
+		it "depends on room temperature" do
+			room = double ("room")
+			heater.room = room
+			heater.power = 5
+			heater.state = :started
+			heater.water_temperature = 60
+			room.stub(:temperature).and_return(18)
+			power_at_18 = heater.actual_power
+			room.stub(:temperature).and_return(20)
+			power_at_20 = heater.actual_power
+			expect(power_at_18 > power_at_20).to be_true
+		end
 	end
 	describe "stop" do
 		it "sets state to :stopped" do
