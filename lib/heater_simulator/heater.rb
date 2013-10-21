@@ -16,12 +16,12 @@ class Heater
 	end
 
 	def actual_power
+		raise "room should be set" if !@room
 		nwt = 60
 		nrt = 20
 		return 0 unless started?
 		return 0 unless @water_temperature
-		room_temperature = @room ? @room.temperature : nrt
-		1.0*@power*(@water_temperature-room_temperature)/(nwt-nrt)
+		1.0*@power*(@water_temperature-@room.temperature)/(nwt-nrt)
 	end
 
 	def started?

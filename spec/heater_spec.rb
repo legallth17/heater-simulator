@@ -2,43 +2,46 @@ require "heater_simulator/heater"
 
 describe Heater do
 	let(:heater) { Heater.new }
+	let(:room) { double("room") }
 	subject { heater }
 	describe "init values" do
 		its(:state) { should == :stopped }				
 		its(:power) { should == 0 }				
 	end
 	describe "actual_power" do
-		it "returns 0 when heater is stopped" do
-			heater.power = 5
-			heater.state = :stopped
-			expect(heater.actual_power).to eq(0)
-		end
-		it "returns power when heater is started" do
+		before(:each) do
+			heater.room	= room
+			room.stub(:temperature).and_return(20)
 			heater.power = 5
 			heater.water_temperature = 60
 			heater.state = :started
+		end
+		it "returns a power when heater is started" do
 			expect(heater.actual_power > 0).to be_true
 		end
+		it "returns 0 when heater is stopped" do
+			heater.state = :stopped
+			expect(heater.actual_power).to eq(0)
+		end
 		it "depends on water temperature" do
-			heater.power = 5
-			heater.state = :started
 			heater.water_temperature = 60
 			power_at_60 = heater.actual_power
 			heater.water_temperature = 50
 			power_at_50 = heater.actual_power
+			puts "#{power_at_60} #{power_at_50}"
 			expect(power_at_60 > power_at_50).to be_true
 		end
 		it "depends on room temperature" do
-			room = double ("room")
-			heater.room = room
-			heater.power = 5
 			heater.state = :started
-			heater.water_temperature = 60
-			room.stub(:temperature).and_return(18)
+			heater.room  = double("room")
+			heater.room.stub(:temperature).and_return(18,20)
 			power_at_18 = heater.actual_power
-			room.stub(:temperature).and_return(20)
 			power_at_20 = heater.actual_power
 			expect(power_at_18 > power_at_20).to be_true
+		end
+		it "raises an error when room is not set" do
+			heater.room = nil
+			expect{ heater.actual_power }.to raise_error( "room should be set")
 		end
 	end
 	describe "stop" do
