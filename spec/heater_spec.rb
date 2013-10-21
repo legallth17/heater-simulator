@@ -15,8 +15,18 @@ describe Heater do
 		end
 		it "returns power when heater is started" do
 			heater.power = 5
+			heater.water_temperature = 60
 			heater.state = :started
-			expect(heater.actual_power).to eq(5)
+			expect(heater.actual_power > 0).to be_true
+		end
+		it "depends on water temperature" do
+			heater.power = 5
+			heater.state = :started
+			heater.water_temperature = 60
+			power_at_60 = heater.actual_power
+			heater.water_temperature = 50
+			power_at_50 = heater.actual_power
+			expect(power_at_60 > power_at_50).to be_true
 		end
 	end
 	describe "stop" do

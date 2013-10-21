@@ -1,9 +1,10 @@
 class Heater
-	attr_accessor :power, :state
+	attr_accessor :power, :state, :water_temperature
 
 	def initialize
 		@power = 0
 		@state = :stopped
+		@water_temperature = :nil
 	end
 
 	def start
@@ -16,7 +17,8 @@ class Heater
 
 	def actual_power
 		return 0 unless started?
-		@power
+		return 0 unless @water_temperature
+		(@power*@water_temperature)/60
 	end
 
 	def started?
