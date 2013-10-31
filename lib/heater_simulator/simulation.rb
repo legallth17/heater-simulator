@@ -38,4 +38,14 @@ class Simulation
 			@results << @room.temperature
 		end
 	end
+
+	def filter_results(step=1)
+		filtered_results = Array.new
+		filtered_results << results[0]
+		n = duration / step
+		(1..n).each do |i|
+			filtered_results << results[i*step]
+		end
+		filtered_results
+	end
 end
