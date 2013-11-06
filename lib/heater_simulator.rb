@@ -8,8 +8,8 @@ end
 		simulation = Simulation.new
 		simulation.duration = 600
 		simulation.run
-		simulation.results_by_step(60).each do |t|
-			puts t;
+		simulation.results_by_step(60).each do |r|
+			puts "#{r.time}: #{r.temperature}"
 		end
 	end
 

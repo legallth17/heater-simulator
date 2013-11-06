@@ -3,6 +3,7 @@ require_relative "heater.rb"
 require_relative "probe.rb"
 require_relative "heat_controler.rb"
 class Simulation
+	Result = Struct.new(:time,:temperature)
 	attr_accessor :room, :heater, :probe, :controler, :duration
 	attr_reader :results
 
@@ -31,21 +32,16 @@ class Simulation
 
 	def run
 		@results = Array.new
-		@results << @room.temperature
+		@results << Result.new(0,@room.temperature)
 		for n in 1..duration do
 			controler.check_temperature
 			room.adjust_temperature
-			@results << @room.temperature
+			@results << Result.new(n,@room.temperature)
 		end
 	end
 
 	def results_by_step(step=1)
-		filtered_results = Array.new
-		filtered_results << results[0]
-		n = duration / step
-		(1..n).each do |i|
-			filtered_results << results[i*step]
-		end
-		filtered_results
+		results.select { |r| r.time%step == 0 && r.time <= duration }
 	end
+
 end
