@@ -12,6 +12,6 @@ class HeatControler
 		heater.water_temperature = heater_water_temperature
 	end
 	def heater_water_temperature
-		35
+		(60 - heater.room.outside_temperature)
 	end
 end

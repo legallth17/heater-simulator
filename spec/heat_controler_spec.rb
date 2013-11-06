@@ -12,6 +12,7 @@ describe HeatControler do
 			subject.probe  = probe
 			subject.heater = heater
 			heater.stub(:water_temperature=)
+			subject.stub(:heater_water_temperature).and_return(30)
 		end
 		it "starts heater when heater is stopped and temperature (eg 18.4) is lower than min threshold (eg 18.5)" do
 			probe.stub(:temperature).and_return(18.4)
@@ -38,12 +39,20 @@ describe HeatControler do
 			subject.check_temperature
 		end
 		it "updates heater water temperature when heater is started" do
-			subject.stub(:heater_water_temperature).and_return(30)
 			probe.stub(:temperature).and_return(19)
 			heater.stub(:started?).and_return(true)
 			heater.should_receive(:water_temperature=).with(30)
 			subject.check_temperature
 		end
 	end
-
+	describe "heater_water_temperature" do
+		it "depends outside temperature" do
+			subject.stub(:outside_temperature)
+			subject.heater.stub(:room).and_return(double())
+			subject.heater.room.stub(:outside_temperature).and_return(10,20)
+			t1 = subject.heater_water_temperature
+			t2 = subject.heater_water_temperature
+			expect(t1).to be > t2
+		end
+	end
 end
