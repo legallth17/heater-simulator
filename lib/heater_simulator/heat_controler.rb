@@ -9,5 +9,9 @@ class HeatControler
 	def check_temperature
 		heater.stop  if  heater.started? && @probe.temperature >= (@target_temperature + @threshold)
 		heater.start if !heater.started? && @probe.temperature <  (@target_temperature - @threshold)
+		heater.water_temperature = heater_water_temperature
+	end
+	def heater_water_temperature
+		35
 	end
 end
