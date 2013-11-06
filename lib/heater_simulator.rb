@@ -8,7 +8,7 @@ end
 		simulation = Simulation.new
 		simulation.duration = 600
 		simulation.run
-		simulation.filter_results(60).each do |t|
+		simulation.results_by_step(60).each do |t|
 			puts t;
 		end
 	end
