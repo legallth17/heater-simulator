@@ -24,14 +24,15 @@ describe Simulation do
 			simulation.run
 			expect(simulation.room.temperature).to be > 18
 		end
-		it "should create results with all measured temperatures" do
-			simulation.duration = 10
+		it "should create results with all measured temperatures in room" do
+			simulation.controler.stub(:check_temperature)
+			simulation.room.stub(:adjust_temperature)
+			simulation.room.stub(:temperature).and_return(18, 18, 19, 19.5)
+			simulation.duration = 5
+			# test
 			simulation.run
-			expect(simulation.results.size).to be == 11
-			# initial temperature
-			expect(simulation.results[0]).to be == 18
-			# last temperature
-			expect(simulation.results[10]).to be == simulation.room.temperature
+			# check
+			expect(simulation.results).to be == [18, 18, 19, 19.5, 19.5, 19.5]
 		end
 	end
 	describe "filter_results" do
