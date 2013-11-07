@@ -37,20 +37,25 @@ describe Simulation do
 		end
 	end
 	describe "results_by_step" do
+		def temperatures(results)
+			results.map { |r| r.temperature }
+		end
 		before(:each) do
-			simulation.stub(:results).and_return (0..100).to_a.map { |v| Simulation::Result.new(v,v) }
+			results = []
+			(0..100).each { |v| results << Simulation::Result.new(v,v) }
+			simulation.stub(:results).and_return(results)
 		end
 		it "returns 7 points for a step of 10 and duration of 69s" do
 			simulation.duration = 69
-			expect(simulation.results_by_step(10).map { |v| v.temperature } ).to be == [0,10,20,30,40,50,60]
+			expect(temperatures simulation.results_by_step(10)).to be == [0,10,20,30,40,50,60]
 		end
 		it "returns 8 points for a step of 10 and duration of 70s" do
 			simulation.duration = 70
-			expect(simulation.results_by_step(10).map{|v| v.temperature}).to be == [0,10,20,30,40,50,60,70]
+			expect(temperatures simulation.results_by_step(10)).to be == [0,10,20,30,40,50,60,70]
 		end
 		it "returns 11 with a step of 1 and duration of 10s" do
 			simulation.duration = 10
-			expect(simulation.results_by_step(1).map{|v| v.temperature}).to be == [0,1,2,3,4,5,6,7,8,9,10]
+			expect(temperatures simulation.results_by_step(1)).to be == [0,1,2,3,4,5,6,7,8,9,10]
 		end
 	end
 end

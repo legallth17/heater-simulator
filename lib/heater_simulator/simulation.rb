@@ -4,6 +4,7 @@ require_relative "probe.rb"
 require_relative "heat_controler.rb"
 class Simulation
 	Result = Struct.new(:time,:temperature)
+
 	attr_accessor :room, :heater, :probe, :controler, :duration
 	attr_reader :results
 
